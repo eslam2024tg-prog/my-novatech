@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نوفا تك | NTT - أنظمة المراقبة والحلول الأمنية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --panel:#121A2B;
+    --panel-2:#0F1626;
+    --line:#22304A;
+    --text:#E8ECF4;
+    --muted:#7C8BA6;
+    --cyan:#00D9C0;
+    --cyan-dim:rgba(0,217,192,.14);
+    --amber:#FFB020;
+    --amber-dim:rgba(255,176,32,.14);
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:'Tajawal',sans-serif;
+    line-height:1.7;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  ::selection{background:var(--cyan);color:#04302B;}
+
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,18,32,.86);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .headbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-name{font-weight:900;font-size:20px;}
+  .brand-tag{font-size:10.5px;color:var(--muted);letter-spacing:1.5px;}
+  nav{display:flex;gap:28px;}
+  nav a{font-size:14.5px;color:var(--muted);transition:color .2s;}
+  nav a:hover{color:var(--cyan);}
+  .call-btn{
+    background:var(--cyan);color:#04302B;padding:9px 18px;border-radius:8px;
+    font-weight:700;font-size:14px;white-space:nowrap;
+  }
+  .menu-toggle{display:none;background:none;border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:8px 10px;font-size:18px;}
+
+  /* Hero */
+  .hero{padding:64px 0 40px;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--amber);
+    letter-spacing:2px;margin-bottom:18px;
+  }
+  .dot-live{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+  h1{font-size:44px;font-weight:900;margin:0 0 18px;line-height:1.25;}
+  h1 span{color:var(--cyan);}
+  .hero-sub{color:var(--muted);font-size:16.5px;margin:0 0 30px;max-width:520px;}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{padding:13px 26px;border-radius:9px;font-weight:700;font-size:15px;display:inline-block;}
+  .btn-primary{background:var(--cyan);color:#04302B;}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);}
+  .btn-primary:hover{opacity:.9;}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+  /* monitor wall signature */
+  .wall{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .mon{
+    background:var(--panel);border:1px solid var(--line);border-radius:8px;
+    aspect-ratio:4/3;position:relative;overflow:hidden;
+  }
+  .mon::after{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(0,217,192,.05) 0 2px,transparent 2px 4px);
+    animation:scan 6s linear infinite;
+  }
+  @keyframes scan{0%{transform:translateY(-4px);}100%{transform:translateY(4px);}}
+  .mon .rec{position:absolute;top:6px;left:7px;display:flex;align-items:center;gap:4px;font-size:8px;color:var(--amber);}
+  .mon .rec i{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:pulse 1.4s infinite;display:inline-block;}
+  .mon svg{position:absolute;inset:0;margin:auto;width:38%;height:38%;color:var(--cyan);opacity:.55;}
+  .mon .tag{position:absolute;bottom:5px;right:7px;font-size:7.5px;color:var(--muted);letter-spacing:.5px;}
+
+  @media(prefers-reduced-motion:reduce){
+    .dot-live,.mon::after,.mon .rec i{animation:none;}
+  }
+
+  /* Stats */
+  .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 0;margin-top:56px;}
+  .stats-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+  .stat{flex:1;min-width:150px;text-align:center;}
+  .stat b{display:block;font-size:28px;color:var(--cyan);font-family:'JetBrains Mono',monospace;}
+  .stat span{font-size:13px;color:var(--muted);}
+
+  /* Sections */
+  section{padding:72px 0;}
+  .sec-head{max-width:640px;margin:0 0 40px;}
+  .sec-eyebrow{font-size:12px;letter-spacing:2px;color:var(--cyan);margin-bottom:10px;font-family:'JetBrains Mono',monospace;}
+  h2{font-size:30px;font-weight:900;margin:0 0 12px;}
+  .sec-sub{color:var(--muted);font-size:15.5px;}
+
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+  #about-text{color:var(--muted);font-size:15.5px;white-space:pre-line;}
+  .feat-list{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;}
+  .feat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;font-size:14px;}
+  .feat b{display:block;color:var(--text);margin-bottom:4px;}
+  .feat span{color:var(--muted);font-size:12.5px;}
+
+  /* categories/products */
+  .cat-block{margin-bottom:52px;}
+  .cat-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .cat-icon{width:38px;height:38px;border-radius:9px;background:var(--cyan-dim);display:flex;align-items:center;justify-content:center;color:var(--cyan);}
+  .cat-icon svg{width:20px;height:20px;}
+  .cat-title{font-size:19px;font-weight:700;}
+  .cat-code{font-size:11px;color:var(--muted);letter-spacing:1.5px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;transition:border-color .2s,transform .2s;
+  }
+  .card:hover{border-color:var(--cyan);transform:translateY(-3px);}
+  .card-img{aspect-ratio:4/3;background:var(--panel-2);position:relative;display:flex;align-items:center;justify-content:center;}
+  .card-img svg{width:34%;height:34%;color:var(--cyan);opacity:.5;}
+  .card-img img{width:100%;height:100%;object-fit:cover;}
+  .ph-badge{
+    position:absolute;top:8px;left:8px;background:var(--amber-dim);color:var(--amber);
+    font-size:10px;padding:3px 8px;border-radius:6px;font-family:'JetBrains Mono',monospace;
+  }
+  .brand-badge{
+    position:absolute;top:8px;right:8px;background:var(--cyan-dim);color:var(--cyan);
+    font-size:10px;padding:3px 8px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-weight:600;
+  }
+  .card-body{padding:14px 16px 16px;}
+  .card-body h3{font-size:15px;margin:0 0 6px;font-weight:700;}
+  .card-body p{font-size:12.5px;color:var(--muted);margin:0 0 10px;min-height:34px;}
+  .card-foot{display:flex;justify-content:space-between;align-items:center;}
+  .price{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:13px;}
+  .price.none{color:var(--muted);}
+  .ask{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:5px 10px;border-radius:6px;}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  .info-list{display:flex;flex-direction:column;gap:14px;}
+  .info-item{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;}
+  .info-item .ic{width:34px;height:34px;border-radius:8px;background:var(--cyan-dim);color:var(--cyan);display:flex;align-items:center;justify-content:center;flex:none;}
+  .info-item b{display:block;font-size:14px;}
+  .info-item span{font-size:13px;color:var(--muted);}
+  form{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+  form label{display:block;font-size:12.5px;color:var(--muted);margin:14px 0 6px;}
+  form input,form textarea{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    color:var(--text);padding:11px 12px;font-family:inherit;font-size:14px;
+  }
+  form textarea{resize:vertical;min-height:90px;}
+  form button{margin-top:18px;width:100%;background:var(--cyan);color:#04302B;border:none;
+    border-radius:9px;padding:13px;font-weight:700;font-size:15px;cursor:pointer;}
+  .form-note{font-size:11.5px;color:var(--muted);margin-top:10px;}
+
+  footer{border-top:1px solid var(--line);padding:36px 0;}
+  .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;align-items:center;}
+  .foot-links{display:flex;gap:22px;flex-wrap:wrap;}
+  .foot-links a{font-size:13px;color:var(--muted);}
+  .foot-links a:hover{color:var(--cyan);}
+  .copyright{font-size:12px;color:var(--muted);width:100%;padding-top:20px;border-top:1px solid var(--line);margin-top:20px;}
+
+  @media(max-width:880px){
+    nav{display:none;}
+    .menu-toggle{display:block;}
+    .hero-grid,.about-grid,.contact-grid{grid-template-columns:1fr;}
+    h1{font-size:32px;}
+    .stats-row{gap:24px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <div class="brand">
+      <span id="header-logo-slot">
+        <svg width="34" height="34" viewBox="0 0 80 82"><path d="M40,4 L70,16 V40 C70,60 55,71 40,78 C25,71 10,60 10,40 V16 Z" fill="#121A2B" stroke="#00D9C0" stroke-width="3"/><circle cx="40" cy="38" r="15" fill="none" stroke="#00D9C0" stroke-width="2.5"/><circle cx="40" cy="38" r="6" fill="#00D9C0"/></svg>
+      </span>
+      <div>
+        <div class="brand-name" id="brand-name">نوفا تك</div>
+        <div class="brand-tag mono">NOVA TECH · NTT</div>
+      </div>
+    </div>
+    <nav>
+      <a href="#home">الرئيسية</a>
+      <a href="#about">من نحن</a>
+      <a href="#products">المنتجات</a>
+      <a href="#contact">تواصل معنا</a>
+    </nav>
+    <a class="call-btn mono" id="call-btn" href="#">اتصل الآن</a>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot-live"></span> أنظمة مراقبة تعمل على مدار الساعة</div>
+      <h1>حلول <span>أمنية متكاملة</span><br>لحماية ما يهمك</h1>
+      <p class="hero-sub" id="hero-sub">توريد وتركيب وصيانة أنظمة المراقبة والكاميرات وأجهزة التسجيل والبصمات وجميع الوصلات والكابلات المرتبطة بها، بخبرة فنية وضمان حقيقي.</p>
+      <div class="cta-row">
+        <a href="#products" class="btn btn-primary">تصفح المنتجات</a>
+        <a href="#contact" class="btn btn-ghost">اطلب عرض سعر</a>
+      </div>
+    </div>
+    <div class="wall" id="monitor-wall"></div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap stats-row">
+    <div class="stat"><b class="mono">+6</b><span>سنوات خبرة تقنية</span></div>
+    <div class="stat"><b class="mono">+500</b><span>عميل تمت خدمته</span></div>
+    <div class="stat"><b class="mono">+1200</b><span>كاميرا تم تركيبها</span></div>
+    <div class="stat"><b class="mono">24/7</b><span>دعم فني وصيانة</span></div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div>
+      <div class="sec-eyebrow">ABOUT · NTT</div>
+      <h2>من نحن</h2>
+      <p id="about-text">نوفا تك (NTT) شركة متخصصة في بيع وتركيب أنظمة المراقبة والحماية، نوفر كاميرات المراقبة بمختلف أنواعها، أجهزة التسجيل DVR وNVR، أنظمة البصمة والدخول، إضافة إلى كافة الوصلات والكابلات اللازمة. نحرص على تقديم منتجات موثوقة وخدمة تركيب احترافية وصيانة مستمرة لعملائنا.</p>
+    </div>
+    <div class="feat-list">
+      <div class="feat"><b>توريد أصلي</b><span>منتجات مضمونة المصدر</span></div>
+      <div class="feat"><b>تركيب احترافي</b><span>فريق فني مدرّب</span></div>
+      <div class="feat"><b>صيانة دورية</b><span>عقود صيانة مرنة</span></div>
+      <div class="feat"><b>ضمان حقيقي</b><span>متابعة ما بعد البيع</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">PRODUCT LINE</div>
+      <h2>منتجاتنا</h2>
+      <p class="sec-sub">الصور أدناه أولية وسيتم استبدالها بصور المنتجات الفعلية عبر لوحة التحكم.</p>
+    </div>
+    <div id="catalog"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">GET IN TOUCH</div>
+      <h2>تواصل معنا</h2>
+      <p class="sec-sub">للاستفسار أو طلب عرض سعر، تواصلوا معنا عبر أي من الوسائل التالية.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="info-list" id="info-list"></div>
+      <form onsubmit="event.preventDefault(); alert('شكراً لتواصلكم، سيتم الرد عليكم قريباً.');">
+        <label>الاسم</label>
+        <input type="text" placeholder="اسمك الكامل" required>
+        <label>رقم الهاتف</label>
+        <input type="tel" placeholder="05xxxxxxxx" required>
+        <label>تفاصيل الطلب</label>
+        <textarea placeholder="اكتب تفاصيل استفسارك أو الأجهزة المطلوبة"></textarea>
+        <button type="submit">إرسال الطلب</button>
+        <div class="form-note">هذا النموذج لأغراض العرض فقط ولا يقوم بإرسال فعلي للبيانات.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="brand">
+        <span id="footer-logo-slot">
+          <svg width="26" height="26" viewBox="0 0 80 82"><path d="M40,4 L70,16 V40 C70,60 55,71 40,78 C25,71 10,60 10,40 V16 Z" fill="#121A2B" stroke="#00D9C0" stroke-width="3"/><circle cx="40" cy="38" r="15" fill="none" stroke="#00D9C0" stroke-width="2.5"/><circle cx="40" cy="38" r="6" fill="#00D9C0"/></svg>
+        </span>
+        <span class="mono" style="font-size:12px;color:var(--muted);">© <span id="year"></span> NOVA TECH · NTT</span>
+      </div>
+      <div class="foot-links">
+        <a href="#home">الرئيسية</a>
+        <a href="#about">من نحن</a>
+        <a href="#products">المنتجات</a>
+        <a href="#contact">تواصل معنا</a>
+      </div>
+    </div>
+    <div class="copyright">جميع الحقوق محفوظة لشركة نوفا تك للأنظمة الأمنية. هذا الموقع نموذج أولي قابل للتعديل عبر لوحة التحكم.</div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const ICONS = {
+  camera: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 16h8l3-5h14l3 5h8v22H6z"/><circle cx="24" cy="27" r="7"/></svg>',
+  dvr: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="6" y="12" width="36" height="20" rx="2"/><circle cx="14" cy="22" r="2.4"/><circle cx="22" cy="22" r="2.4"/><line x1="30" y1="18" x2="38" y2="18"/><line x1="30" y1="26" x2="38" y2="26"/><line x1="12" y1="36" x2="36" y2="36"/></svg>',
+  finger: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M24 8a14 14 0 0 0-14 14v6"/><path d="M24 14a8 8 0 0 0-8 8v8"/><path d="M24 20a2.5 2.5 0 0 1 2.5 2.5V34"/><path d="M31 22v6a7 7 0 0 1-7 7"/><path d="M17 34v-4"/></svg>',
+  cable: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 34 30 18"/><rect x="8" y="30" width="10" height="10" rx="2" transform="rotate(-45 13 35)"/><rect x="30" y="8" width="10" height="10" rx="2" transform="rotate(-45 35 13)"/><path d="M20 28l-4-4M26 22l-4-4"/></svg>',
+  shield: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M24 6 38 11v11c0 11-6 18-14 20-8-2-14-9-14-20V11z"/><circle cx="24" cy="24" r="6"/></svg>'
+};
+
+const API = '/api';
+
+async function apiGet(path){
+  const res = await fetch(API + path);
+  if(!res.ok) throw new Error('فشل تحميل البيانات: ' + path);
+  return res.json();
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderMonitorWall(){
+  const keys = Object.keys(ICONS);
+  let html = '';
+  for(let i=0;i<6;i++){
+    const k = keys[i % keys.length];
+    html += `<div class="mon"><div class="rec"><i></i>REC</div>${ICONS[k]}<div class="tag mono">CH-0${i+1}</div></div>`;
+  }
+  document.getElementById('monitor-wall').innerHTML = html;
+}
+
+function renderInfo(settings){
+  const items = [
+    {ic:'📞', b:'الهاتف', v:settings.phone},
+    {ic:'💬', b:'واتساب', v:settings.whatsapp},
+    {ic:'✉️', b:'البريد الإلكتروني', v:settings.email},
+    {ic:'📍', b:'العنوان', v:settings.address},
+    {ic:'🕒', b:'ساعات العمل', v:settings.hours}
+  ];
+  document.getElementById('info-list').innerHTML = items.map(it => `
+    <div class="info-item">
+      <div class="ic">${it.ic}</div>
+      <div><b>${escapeHtml(it.b)}</b><span>${escapeHtml(it.v||'-')}</span></div>
+    </div>`).join('');
+  document.getElementById('call-btn').href = 'tel:' + (settings.phone||'').replace(/\s/g,'');
+}
+
+function renderCatalog(categories, products){
+  const wrap = document.getElementById('catalog');
+  wrap.innerHTML = categories.map(cat => {
+    const items = products.filter(p => p.cat === cat.id);
+    if(items.length === 0) return '';
+    const cards = items.map(p => `
+      <div class="card">
+        <div class="card-img">
+          ${p.image ? `<img src="${p.image}" alt="${escapeHtml(p.name)}">` : ICONS[cat.icon]}
+          ${p.placeholder ? '<span class="ph-badge">صورة مؤقتة</span>' : ''}
+          ${p.brand ? `<span class="brand-badge">${escapeHtml(p.brand)}</span>` : ''}
+        </div>
+        <div class="card-body">
+          <h3>${escapeHtml(p.name)}</h3>
+          <p>${escapeHtml(p.desc||'')}</p>
+          <div class="card-foot">
+            <span class="price ${p.price ? '' : 'none'}">${p.price ? escapeHtml(p.price) : 'السعر عند الطلب'}</span>
+            <a href="#contact" class="ask">اطلب الآن</a>
+          </div>
+        </div>
+      </div>`).join('');
+    return `
+      <div class="cat-block">
+        <div class="cat-head">
+          <div class="cat-icon">${ICONS[cat.icon]}</div>
+          <div>
+            <div class="cat-title">${escapeHtml(cat.name)}</div>
+            <div class="cat-code mono">${escapeHtml(cat.code)}</div>
+          </div>
+        </div>
+        <div class="prod-grid">${cards}</div>
+      </div>`;
+  }).join('');
+}
+
+async function init(){
+  renderMonitorWall();
+
+  const [settings, categories, products] = await Promise.all([
+    apiGet('/settings'),
+    apiGet('/categories'),
+    apiGet('/products')
+  ]);
+
+  if(settings.logoImage){
+    const logoHtml = `<img src="${settings.logoImage}" alt="شعار الموقع" style="height:34px;width:auto;max-width:120px;object-fit:contain;">`;
+    document.getElementById('header-logo-slot').innerHTML = logoHtml;
+    document.getElementById('footer-logo-slot').innerHTML = logoHtml.replace('height:34px','height:26px');
+  }
+
+  document.getElementById('brand-name').textContent = settings.siteName || 'نوفا تك';
+  document.getElementById('hero-sub').textContent = settings.heroSub || '';
+  document.getElementById('about-text').textContent = settings.about || '';
+  document.title = (settings.siteName || 'نوفا تك') + ' | NTT - أنظمة المراقبة والحلول الأمنية';
+
+  renderInfo(settings);
+  renderCatalog(categories, products);
+}
+init();
+</script>
+</body>
+</html>

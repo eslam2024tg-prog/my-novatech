@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم نوفا تك | NTT Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;--panel:#121A2B;--panel-2:#0F1626;--line:#22304A;
+    --text:#E8ECF4;--muted:#7C8BA6;--cyan:#00D9C0;--cyan-dim:rgba(0,217,192,.14);
+    --amber:#FFB020;--amber-dim:rgba(255,176,32,.14);--red:#FF5D5D;--radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;min-height:100vh;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  input,textarea,select,button{font-family:inherit;}
+
+  /* login */
+  #login-screen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .login-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:34px;max-width:360px;width:100%;text-align:center;
+  }
+  .login-card svg{margin:0 auto 14px;}
+  .login-card h1{font-size:19px;margin:0 0 6px;}
+  .login-card p{color:var(--muted);font-size:13px;margin:0 0 20px;}
+  .login-card input{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    color:var(--text);padding:11px 12px;font-size:14px;margin-bottom:12px;
+  }
+  .login-card button{
+    width:100%;background:var(--cyan);color:#04302B;border:none;border-radius:9px;
+    padding:12px;font-weight:700;font-size:14.5px;cursor:pointer;
+  }
+  .login-note{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.6;}
+  .login-error{color:var(--red);font-size:12.5px;margin-bottom:10px;display:none;}
+
+  /* dashboard shell */
+  #dash{display:none;}
+  .shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+  aside{background:var(--panel);border-left:1px solid var(--line);padding:22px 16px;}
+  .brand{display:flex;align-items:center;gap:8px;margin-bottom:26px;padding:0 6px;}
+  .brand b{font-size:15px;}
+  .brand span{display:block;font-size:9.5px;color:var(--muted);letter-spacing:1px;}
+  .tabs{display:flex;flex-direction:column;gap:4px;}
+  .tab-btn{
+    text-align:right;background:none;border:none;color:var(--muted);padding:11px 12px;
+    border-radius:8px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px;
+  }
+  .tab-btn:hover{background:var(--panel-2);color:var(--text);}
+  .tab-btn.active{background:var(--cyan-dim);color:var(--cyan);font-weight:700;}
+  main{padding:28px 32px;max-width:920px;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+  .page-head h2{font-size:22px;margin:0 0 4px;}
+  .page-head p{color:var(--muted);font-size:13.5px;margin:0;}
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--panel);border:1px solid var(--cyan);color:var(--cyan);padding:10px 20px;
+    border-radius:8px;font-size:13.5px;opacity:0;transition:.25s;pointer-events:none;z-index:100;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .btn{padding:10px 18px;border-radius:8px;font-weight:700;font-size:13.5px;border:none;cursor:pointer;}
+  .btn-primary{background:var(--cyan);color:#04302B;}
+  .btn-ghost{background:none;border:1px solid var(--line);color:var(--text);}
+  .btn-danger{background:none;border:1px solid var(--red);color:var(--red);}
+  .btn:hover{opacity:.88;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:18px;}
+  label{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 6px;}
+  label:first-child{margin-top:0;}
+  input[type=text],input[type=tel],input[type=email],textarea,select{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    color:var(--text);padding:10px 12px;font-size:14px;
+  }
+  textarea{resize:vertical;min-height:80px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .file-drop{
+    border:1.5px dashed var(--line);border-radius:10px;padding:16px;text-align:center;
+    color:var(--muted);font-size:13px;cursor:pointer;position:relative;
+  }
+  .file-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .preview-img{width:90px;height:68px;object-fit:cover;border-radius:8px;border:1px solid var(--line);margin-top:10px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:right;color:var(--muted);font-weight:500;font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  .thumb{width:42px;height:32px;object-fit:cover;border-radius:5px;background:var(--panel-2);}
+  .badge{font-size:10.5px;background:var(--cyan-dim);color:var(--cyan);padding:3px 8px;border-radius:6px;}
+  .actions{display:flex;gap:8px;}
+  .icon-btn{background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:5px 9px;cursor:pointer;font-size:12px;}
+  .icon-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+  .icon-btn.danger:hover{color:var(--red);border-color:var(--red);}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:24px;}
+  .disclosure{
+    background:var(--amber-dim);border:1px solid var(--amber);color:var(--amber);
+    font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:20px;line-height:1.6;
+  }
+  @media(max-width:760px){
+    .shell{grid-template-columns:1fr;}
+    aside{border-left:none;border-bottom:1px solid var(--line);}
+    .tabs{flex-direction:row;overflow-x:auto;}
+    main{padding:20px;}
+    .row2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <svg width="52" height="56" viewBox="0 0 80 82"><path d="M40,4 L70,16 V40 C70,60 55,71 40,78 C25,71 10,60 10,40 V16 Z" fill="#0F1626" stroke="#00D9C0" stroke-width="3"/><circle cx="40" cy="38" r="15" fill="none" stroke="#00D9C0" stroke-width="2.5"/><circle cx="40" cy="38" r="6" fill="#00D9C0"/></svg>
+    <h1>لوحة تحكم نوفا تك</h1>
+    <p>أدخل كلمة المرور للوصول إلى إدارة الموقع</p>
+    <div class="login-error" id="login-error">كلمة المرور غير صحيحة</div>
+    <input type="text" id="pass-input" placeholder="كلمة المرور" autocomplete="off">
+    <button onclick="tryLogin()">دخول</button>
+    <div class="login-note" id="login-note">جارٍ التحقق...</div>
+  </div>
+</div>
+
+<div id="dash">
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <svg width="26" height="26" viewBox="0 0 80 82"><path d="M40,4 L70,16 V40 C70,60 55,71 40,78 C25,71 10,60 10,40 V16 Z" fill="#0B1220" stroke="#00D9C0" stroke-width="3"/><circle cx="40" cy="38" r="15" fill="none" stroke="#00D9C0" stroke-width="2.5"/><circle cx="40" cy="38" r="6" fill="#00D9C0"/></svg>
+        <div><b>لوحة التحكم</b><span class="mono">NTT ADMIN</span></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="products">📦 المنتجات</button>
+        <button class="tab-btn" data-tab="settings">⚙️ بيانات الموقع</button>
+        <button class="tab-btn" data-tab="security">🔒 الأمان</button>
+      </div>
+    </aside>
+
+    <main>
+      <div class="disclosure">تنبيه: هذه لوحة تحكم نموذجية أولية، وبيانات المنتجات وإعدادات الموقع تُخزَّن بشكل مشترك ومرئية لأي شخص يفتح صفحة الموقع أو لوحة التحكم. لا تُستخدم لبيانات حساسة.</div>
+
+      <!-- PRODUCTS -->
+      <section class="page active" id="page-products">
+        <div class="page-head">
+          <div><h2>إدارة المنتجات</h2><p>أضف أو عدّل أو احذف منتجات الموقع وصورها.</p></div>
+          <button class="btn btn-primary" onclick="openProductForm()">+ إضافة منتج</button>
+        </div>
+
+        <div class="card" id="product-form-card" style="display:none;">
+          <label>الاسم</label>
+          <input type="text" id="pf-name" placeholder="مثال: كاميرا خارجية ليلية HD">
+          <div class="row2">
+            <div>
+              <label>التصنيف</label>
+              <select id="pf-cat"></select>
+            </div>
+            <div>
+              <label>السعر (اختياري)</label>
+              <input type="text" id="pf-price" placeholder="مثال: 250 ر.س">
+            </div>
+          </div>
+          <label>العلامة التجارية (اختياري)</label>
+          <input type="text" id="pf-brand" placeholder="مثال: Hikvision">
+          <label>الوصف</label>
+          <textarea id="pf-desc" placeholder="وصف مختصر للمنتج"></textarea>
+          <label>صورة المنتج</label>
+          <div class="file-drop">
+            <span id="pf-file-label">اضغط لرفع صورة (سيتم تصغيرها تلقائياً)</span>
+            <input type="file" id="pf-file" accept="image/*">
+          </div>
+          <img id="pf-preview" class="preview-img" style="display:none;">
+          <div style="margin-top:16px;display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="saveProduct()">حفظ المنتج</button>
+            <button class="btn btn-ghost" onclick="closeProductForm()">إلغاء</button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow-x:auto;">
+          <table id="product-table">
+            <thead><tr><th>صورة</th><th>الاسم</th><th>التصنيف</th><th>السعر</th><th></th></tr></thead>
+            <tbody id="product-tbody"></tbody>
+          </table>
+          <div class="empty" id="product-empty" style="display:none;">لا توجد منتجات بعد.</div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings">
+        <div class="page-head"><div><h2>بيانات الموقع</h2><p>عدّل اسم الموقع ومحتوى الصفحة الرئيسية وبيانات التواصل.</p></div></div>
+        <div class="card">
+          <label>شعار الموقع</label>
+          <div class="file-drop">
+            <span id="logo-file-label">اضغط لرفع شعار جديد (PNG أو SVG بخلفية شفافة أفضل)</span>
+            <input type="file" id="logo-file" accept="image/*">
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:10px;">
+            <img id="logo-preview" class="preview-img" style="display:none;background:var(--panel-2);object-fit:contain;">
+            <button class="btn btn-ghost" id="logo-reset-btn" onclick="resetLogo()" style="display:none;">إعادة الشعار الافتراضي</button>
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn btn-primary" onclick="saveLogo()">حفظ الشعار</button>
+          </div>
+        </div>
+        <div class="card">
+          <label>اسم الموقع</label>
+          <input type="text" id="s-siteName">
+          <label>نص الصفحة الرئيسية (Hero)</label>
+          <textarea id="s-heroSub"></textarea>
+          <label>نبذة عن الشركة (من نحن)</label>
+          <textarea id="s-about" style="min-height:120px;"></textarea>
+        </div>
+        <div class="card">
+          <div class="row2">
+            <div><label>الهاتف</label><input type="text" id="s-phone"></div>
+            <div><label>واتساب</label><input type="text" id="s-whatsapp"></div>
+          </div>
+          <div class="row2">
+            <div><label>البريد الإلكتروني</label><input type="text" id="s-email"></div>
+            <div><label>ساعات العمل</label><input type="text" id="s-hours"></div>
+          </div>
+          <label>العنوان</label>
+          <input type="text" id="s-address">
+          <div style="margin-top:16px;">
+            <button class="btn btn-primary" onclick="saveSettings()">حفظ التغييرات</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section class="page" id="page-security">
+        <div class="page-head"><div><h2>الأمان</h2><p>تغيير كلمة مرور لوحة التحكم.</p></div></div>
+        <div class="card">
+          <label>كلمة المرور الجديدة</label>
+          <input type="text" id="new-pass" placeholder="اكتب كلمة مرور جديدة">
+          <div style="margin-top:16px;">
+            <button class="btn btn-primary" onclick="changePassword()">تحديث كلمة المرور</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+let authToken = null;
+
+async function apiCall(path, options = {}){
+  const headers = Object.assign({}, options.headers || {});
+  if(options.body) headers['Content-Type'] = 'application/json';
+  if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
+  const res = await fetch(API + path, Object.assign({}, options, { headers }));
+  let data = null;
+  try{ data = await res.json(); }catch(e){}
+  if(!res.ok){
+    const err = new Error((data && data.error) || 'حدث خطأ');
+    err.status = res.status;
+    throw err;
+  }
+  return data;
+}
+
+let categories = [];
+let products = [];
+let settings = {};
+let editingId = null;
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------- login ---------- */
+async function initLogin(){
+  document.getElementById('login-note').textContent = 'كلمة المرور الافتراضية عند أول تشغيل: admin123 (يمكن تغييرها لاحقاً من تبويب الأمان)';
+  document.getElementById('pass-input').addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); });
+}
+async function tryLogin(){
+  const input = document.getElementById('pass-input').value;
+  document.getElementById('login-error').style.display = 'none';
+  try{
+    const data = await apiCall('/login', { method:'POST', body: JSON.stringify({ password: input }) });
+    authToken = data.token;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    await initDashboard();
+  }catch(e){
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+async function changePassword(){
+  const np = document.getElementById('new-pass').value.trim();
+  if(!np){ toast('اكتب كلمة مرور جديدة'); return; }
+  try{
+    await apiCall('/change-password', { method:'POST', body: JSON.stringify({ newPassword: np }) });
+    toast('تم تحديث كلمة المرور');
+  }catch(e){
+    toast('حدث خطأ أثناء الحفظ');
+  }
+  document.getElementById('new-pass').value = '';
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- dashboard init ---------- */
+async function initDashboard(){
+  [categories, products, settings] = await Promise.all([
+    apiCall('/categories'),
+    apiCall('/products'),
+    apiCall('/settings')
+  ]);
+
+  const catSel = document.getElementById('pf-cat');
+  catSel.innerHTML = categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+
+  renderProductTable();
+  fillSettingsForm();
+  fillLogoPreview();
+}
+
+function fillLogoPreview(){
+  const prev = document.getElementById('logo-preview');
+  const resetBtn = document.getElementById('logo-reset-btn');
+  if(settings.logoImage){
+    prev.src = settings.logoImage;
+    prev.style.display = 'block';
+    prev.dataset.image = settings.logoImage;
+    resetBtn.style.display = 'inline-block';
+  } else {
+    prev.style.display = 'none';
+    prev.removeAttribute('data-image');
+    resetBtn.style.display = 'none';
+  }
+}
+
+document.getElementById('logo-file').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const isSvg = file.type === 'image/svg+xml';
+    if(isSvg){
+      const prev = document.getElementById('logo-preview');
+      prev.src = ev.target.result;
+      prev.style.display = 'block';
+      prev.dataset.image = ev.target.result;
+      document.getElementById('logo-file-label').textContent = 'تم اختيار شعار جديد - اضغط حفظ الشعار';
+      return;
+    }
+    const img = new Image();
+    img.onload = function(){
+      const maxW = 240;
+      const scale = Math.min(1, maxW / img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/png');
+      const prev = document.getElementById('logo-preview');
+      prev.src = dataUrl;
+      prev.style.display = 'block';
+      prev.dataset.image = dataUrl;
+      document.getElementById('logo-file-label').textContent = 'تم اختيار شعار جديد - اضغط حفظ الشعار';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+async function saveLogo(){
+  const prev = document.getElementById('logo-preview');
+  const image = prev.dataset.image;
+  if(!image){ toast('اختر ملف شعار أولاً'); return; }
+  settings.logoImage = image;
+  try{
+    await apiCall('/settings/logo', { method:'PUT', body: JSON.stringify({ logoImage: image }) });
+    toast('تم حفظ الشعار الجديد');
+  }catch(e){ toast('حدث خطأ أثناء الحفظ'); }
+  fillLogoPreview();
+}
+
+async function resetLogo(){
+  delete settings.logoImage;
+  try{
+    await apiCall('/settings/logo', { method:'PUT', body: JSON.stringify({ logoImage: null }) });
+    toast('تمت إعادة الشعار الافتراضي');
+  }catch(e){ toast('حدث خطأ أثناء الحفظ'); }
+  document.getElementById('logo-file').value = '';
+  document.getElementById('logo-file-label').textContent = 'اضغط لرفع شعار جديد (PNG أو SVG بخلفية شفافة أفضل)';
+  fillLogoPreview();
+}
+
+function fillSettingsForm(){
+  document.getElementById('s-siteName').value = settings.siteName || '';
+  document.getElementById('s-heroSub').value = settings.heroSub || '';
+  document.getElementById('s-about').value = settings.about || '';
+  document.getElementById('s-phone').value = settings.phone || '';
+  document.getElementById('s-whatsapp').value = settings.whatsapp || '';
+  document.getElementById('s-email').value = settings.email || '';
+  document.getElementById('s-hours').value = settings.hours || '';
+  document.getElementById('s-address').value = settings.address || '';
+}
+async function saveSettings(){
+  const payload = {
+    siteName: document.getElementById('s-siteName').value.trim(),
+    heroSub: document.getElementById('s-heroSub').value.trim(),
+    about: document.getElementById('s-about').value.trim(),
+    phone: document.getElementById('s-phone').value.trim(),
+    whatsapp: document.getElementById('s-whatsapp').value.trim(),
+    email: document.getElementById('s-email').value.trim(),
+    hours: document.getElementById('s-hours').value.trim(),
+    address: document.getElementById('s-address').value.trim()
+  };
+  try{
+    settings = await apiCall('/settings', { method:'PUT', body: JSON.stringify(payload) });
+    toast('تم حفظ بيانات الموقع');
+  }catch(e){
+    toast('حدث خطأ أثناء الحفظ');
+  }
+}
+
+/* ---------- products ---------- */
+function renderProductTable(){
+  const tbody = document.getElementById('product-tbody');
+  document.getElementById('product-empty').style.display = products.length ? 'none' : 'block';
+  tbody.innerHTML = products.map(p => {
+    const cat = categories.find(c => c.id === p.cat);
+    return `<tr>
+      <td>${p.image ? `<img class="thumb" src="${p.image}">` : `<div class="thumb"></div>`}</td>
+      <td>${escapeHtml(p.name)} ${p.placeholder ? '<span class="badge">مؤقت</span>' : ''} ${p.brand ? `<span class="badge">${escapeHtml(p.brand)}</span>` : ''}</td>
+      <td>${escapeHtml(cat ? cat.name : p.cat)}</td>
+      <td class="mono">${p.price ? escapeHtml(p.price) : '-'}</td>
+      <td class="actions">
+        <button class="icon-btn" onclick="editProduct('${p.id}')">تعديل</button>
+        <button class="icon-btn danger" onclick="deleteProduct('${p.id}')">حذف</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openProductForm(){
+  editingId = null;
+  document.getElementById('pf-name').value = '';
+  document.getElementById('pf-price').value = '';
+  document.getElementById('pf-brand').value = '';
+  document.getElementById('pf-desc').value = '';
+  document.getElementById('pf-file').value = '';
+  document.getElementById('pf-preview').style.display = 'none';
+  document.getElementById('pf-preview').removeAttribute('data-image');
+  document.getElementById('pf-file-label').textContent = 'اضغط لرفع صورة (سيتم تصغيرها تلقائياً)';
+  document.getElementById('product-form-card').style.display = 'block';
+}
+function closeProductForm(){
+  document.getElementById('product-form-card').style.display = 'none';
+}
+function editProduct(id){
+  const p = products.find(x => x.id === id);
+  if(!p) return;
+  editingId = id;
+  document.getElementById('pf-name').value = p.name;
+  document.getElementById('pf-cat').value = p.cat;
+  document.getElementById('pf-price').value = p.price || '';
+  document.getElementById('pf-brand').value = p.brand || '';
+  document.getElementById('pf-desc').value = p.desc || '';
+  const prev = document.getElementById('pf-preview');
+  if(p.image){ prev.src = p.image; prev.style.display = 'block'; prev.dataset.image = p.image; }
+  else { prev.style.display = 'none'; prev.removeAttribute('data-image'); }
+  document.getElementById('pf-file-label').textContent = 'استبدال الصورة (اختياري)';
+  document.getElementById('product-form-card').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+async function deleteProduct(id){
+  try{
+    await apiCall('/products/' + id, { method:'DELETE' });
+    products = products.filter(p => p.id !== id);
+    renderProductTable();
+    toast('تم حذف المنتج');
+  }catch(e){
+    toast('حدث خطأ أثناء الحذف');
+  }
+}
+
+document.getElementById('pf-file').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const img = new Image();
+    img.onload = function(){
+      const maxW = 640;
+      const scale = Math.min(1, maxW / img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      const prev = document.getElementById('pf-preview');
+      prev.src = dataUrl;
+      prev.style.display = 'block';
+      prev.dataset.image = dataUrl;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+async function saveProduct(){
+  const name = document.getElementById('pf-name').value.trim();
+  if(!name){ toast('اكتب اسم المنتج'); return; }
+  const cat = document.getElementById('pf-cat').value;
+  const price = document.getElementById('pf-price').value.trim();
+  const brand = document.getElementById('pf-brand').value.trim();
+  const desc = document.getElementById('pf-desc').value.trim();
+  const prev = document.getElementById('pf-preview');
+  const image = prev.dataset.image || null;
+  const payload = { name, cat, price, brand, desc, image };
+
+  try{
+    if(editingId){
+      const updated = await apiCall('/products/' + editingId, { method:'PUT', body: JSON.stringify(payload) });
+      const idx = products.findIndex(x => x.id === editingId);
+      if(idx > -1) products[idx] = updated;
+    } else {
+      const created = await apiCall('/products', { method:'POST', body: JSON.stringify(payload) });
+      products.push(created);
+    }
+    renderProductTable();
+    closeProductForm();
+    toast('تم حفظ المنتج');
+  }catch(e){
+    toast('حدث خطأ أثناء الحفظ');
+  }
+}
+
+initLogin();
+</script>
+</body>
+</html>
